@@ -11,49 +11,52 @@ struct HomeView: View {
     @State private var selectedCategory = "All"
     private let categories = ["All", "Chair", "Sofa", "Lamp", "Kitchen", "Table"]
     var body: some View {
-        ZStack {
-            Color("Bg")
-                .ignoresSafeArea(.all)
-            
-            ScrollView {
-                VStack(alignment: .leading) {
-                    AppHeaderView()
-                    
-                    TagLineView()
-                        .padding()
-                    
-                    SearchView()
-                    
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            ForEach(categories, id: \.self) { category in
-                                CategoryView(isActive: (category == selectedCategory), text: category)
-                                    .onTapGesture {
-                                        selectedCategory = category
-                                    }
+        NavigationView {
+            ZStack {
+                Color("Bg")
+                    .ignoresSafeArea(.all)
+                
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        AppHeaderView()
+                        
+                        TagLineView()
+                            .padding()
+                        
+                        SearchView()
+                        
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                ForEach(categories, id: \.self) { category in
+                                    CategoryView(isActive: (category == selectedCategory), text: category)
+                                        .onTapGesture {
+                                            selectedCategory = category
+                                        }
+                                }
                             }
+                            .padding()
                         }
-                        .padding()
+                        
+                        ProductListView(title: "Popular", size: 210)
+                        
+                        ProductListView(title: "Best", size: 180)
                     }
-                    
-                    ProductListView(title: "Popular", size: 210)
-                    
-                    ProductListView(title: "Best", size: 180)
                 }
+                
+                HStack {
+                    NavBarItem(image: Image("Home"), action: {})
+                    NavBarItem(image: Image("fav"), action: {})
+                    NavBarItem(image: Image("shop"), action: {})
+                    NavBarItem(image: Image("User"), action: {})
+                }
+                .padding()
+                .background(.white)
+                .clipShape(Capsule())
+                .padding()
+                .shadow(color: .black.opacity(0.3), radius: 10, x: 5, y: 5)
+                .frame(maxHeight: .infinity, alignment: .bottom)
             }
-            
-            HStack {
-                NavBarItem(image: Image("Home"), action: {})
-                NavBarItem(image: Image("fav"), action: {})
-                NavBarItem(image: Image("shop"), action: {})
-                NavBarItem(image: Image("User"), action: {})
-            }
-            .padding()
-            .background(.white)
-            .clipShape(Capsule())
-            .padding()
-            .shadow(color: .black.opacity(0.3), radius: 10, x: 5, y: 5)
-            .frame(maxHeight: .infinity, alignment: .bottom)
+            .navigationBarHidden(true)
         }
     }
 }
@@ -184,11 +187,14 @@ struct ProductListView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 20) {
                 ForEach(1..<5) { index in
-                    ProductView(image: .init("chair_\(index)"), size: size)
+                    NavigationLink(destination: DetailView()) {
+                        ProductView(image: .init("chair_\(index)"), size: size)
+                    }
                 }
             }
             .padding(.horizontal)
         }
+        .foregroundColor(.black)
     }
 }
 
